@@ -1,147 +1,233 @@
-import Link from 'next/link'
+'use client'
+
+import { useState } from 'react'
 import { NavbarShell } from '@/components/shared/navbar-shell'
 import { Footer } from '@/components/shared/footer'
-import { SITE_CONFIG } from '@/lib/site-config'
 
 export const CONTACT_PAGE_OVERRIDE_ENABLED = true
 
-const checklist = [
-  'Working headline and 2–3 sentence summary for the distribution wire',
-  'Author byline, short bio line, and any sponsor or affiliate disclosure copy',
-  'Preferred publish window and whether the piece is exclusive or syndication-friendly',
-  'Outbound links you need preserved, plus canonical URL if republishing from elsewhere',
-] as const
+const ACCENT = '#FFC69D'
+const ACCENT_DARK = '#CD2C58'
+const ACCENT_MID = '#E06B80'
 
-const timelines = [
-  { stage: 'Triage', detail: 'We confirm fit, originality, and disclosure within a few business days.' },
-  { stage: 'Edit pass', detail: 'Light structural edits for web syndication; major rewrites are sent back with notes.' },
-  { stage: 'Schedule', detail: 'We slot the post into the calendar and share expected live time with you.' },
-  { stage: 'Live & syndication', detail: 'After publish, partner pickups are coordinated where agreements exist.' },
-] as const
+const orgTypes = [
+  'Please Select',
+  'Individual / Freelancer',
+  'Small Business',
+  'Agency / PR Firm',
+  'Enterprise / Corporation',
+  'Non-profit / NGO',
+  'Media / Publishing',
+  'Other',
+]
+
+const subjects = [
+  'Please Select',
+  'Submit a press release',
+  'Guest post inquiry',
+  'Distribution partnership',
+  'Editorial question',
+  'Technical support',
+  'General inquiry',
+]
 
 export function ContactPageOverride() {
-  const domain = SITE_CONFIG.domain
+  const [form, setForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    orgType: 'Please Select',
+    subject: 'Please Select',
+    message: '',
+  })
+  const [submitted, setSubmitted] = useState(false)
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setSubmitted(true)
+  }
 
   return (
-    <div className="min-h-screen bg-white text-neutral-900">
+    <div className="min-h-screen text-neutral-900" style={{ background: '#fdf5f7' }}>
       <NavbarShell />
-      <header className="bg-[#6b0000] px-4 py-10 sm:px-6">
-        <div className="mx-auto max-w-6xl">
-          <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Submit for distribution</h1>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/90">
-            Guest posts, press announcements, and syndicated stories for {SITE_CONFIG.name}. Use the channels below so
-            your request lands with the right reviewers—editorial, compliance, or partner outreach.
-          </p>
-        </div>
-      </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:py-14">
-        <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-          <div>
-            <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-neutral-900">
-              <span className="inline-block h-4 w-0.5 bg-[#c62828]" aria-hidden />
-              Desk contacts
-            </h2>
-            <div className="mt-6 grid gap-6 sm:grid-cols-2">
-              <div className="border border-neutral-200 p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">Editorial desk</p>
-                <p className="mt-3 break-all text-lg font-semibold text-neutral-900">editor@{domain}</p>
-                <p className="mt-2 text-sm leading-relaxed text-neutral-600">
-                  Pitches, drafts, op-eds, and column ideas intended for syndicated placement or on-site publication.
+      <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:py-16">
+        {/* Page title */}
+        <h1
+          className="mb-10 text-center text-4xl font-extrabold tracking-tight sm:text-5xl"
+          style={{ color: ACCENT_DARK }}
+        >
+          Contact Us
+        </h1>
+
+        <div className="mx-auto max-w-2xl">
+          {/* ── Form ── */}
+          <div
+            className="rounded-2xl border p-8 shadow-sm"
+            style={{ borderColor: `${ACCENT}66`, background: '#fff' }}
+          >
+            {submitted ? (
+              <div className="flex flex-col items-center gap-4 py-16 text-center">
+                <div
+                  className="flex h-16 w-16 items-center justify-center rounded-full text-white text-2xl font-bold"
+                  style={{ background: `linear-gradient(135deg, ${ACCENT_DARK}, ${ACCENT_MID})` }}
+                >
+                  ✓
+                </div>
+                <h2 className="text-2xl font-bold" style={{ color: ACCENT_DARK }}>
+                  Message sent!
+                </h2>
+                <p className="max-w-sm text-sm text-neutral-600">
+                  Thanks for reaching out. We'll get back to you within a few business days.
                 </p>
+                <button
+                  onClick={() => setSubmitted(false)}
+                  className="mt-2 rounded-full px-6 py-2 text-sm font-bold text-white transition hover:opacity-90"
+                  style={{ background: ACCENT_DARK }}
+                >
+                  Send another
+                </button>
               </div>
-              <div className="border border-neutral-200 p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">Distribution support</p>
-                <p className="mt-3 break-all text-lg font-semibold text-neutral-900">distribution@{domain}</p>
-                <p className="mt-2 text-sm leading-relaxed text-neutral-600">
-                  Partner lists, republishing windows, technical syndication issues, and pickup reporting.
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-10 border border-[#f5c6c6] bg-[#fcecec] px-5 py-4 text-sm leading-relaxed text-[#7f1d1d]">
-              <strong>Before you send:</strong> We review every submission for fit, originality, and disclosure. We do
-              not accept undisclosed sponsored content, scraped articles, or material that misrepresents sources.
-              Typical first response is a few business days.
-            </div>
-
-            <div className="mt-10">
-              <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-neutral-900">
-                <span className="inline-block h-4 w-0.5 bg-[#c62828]" aria-hidden />
-                Include in your email
-              </h2>
-              <ul className="mt-4 space-y-3 border border-neutral-200 bg-neutral-50/60 px-5 py-5 text-sm text-neutral-700">
-                {checklist.map((item) => (
-                  <li key={item} className="flex gap-3">
-                    <span className="mt-0.5 font-bold text-[#6b0000]" aria-hidden>
-                      ·
-                    </span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <div>
-            <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-neutral-900">
-              <span className="inline-block h-4 w-0.5 bg-[#c62828]" aria-hidden />
-              What happens next
-            </h2>
-            <ol className="mt-6 space-y-0 divide-y divide-neutral-200 border border-neutral-200">
-              {timelines.map((row, i) => (
-                <li key={row.stage} className="flex gap-4 px-5 py-4">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center bg-neutral-900 text-xs font-bold text-white">
-                    {i + 1}
-                  </span>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Row 1: Name + Phone */}
+                <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <p className="text-sm font-semibold text-neutral-900">{row.stage}</p>
-                    <p className="mt-1 text-sm leading-relaxed text-neutral-600">{row.detail}</p>
+                    <label className="mb-1.5 block text-xs font-semibold text-neutral-700">
+                      Contact Name <span style={{ color: ACCENT_DARK }}>*</span>
+                    </label>
+                    <input
+                      name="name"
+                      required
+                      value={form.name}
+                      onChange={handleChange}
+                      className="h-11 w-full rounded-lg border px-3 text-sm text-neutral-900 outline-none transition focus:ring-2"
+                      style={{
+                        borderColor: `${ACCENT}88`,
+                        background: '#fafafa',
+                      }}
+                      placeholder="Your full name"
+                    />
                   </div>
-                </li>
-              ))}
-            </ol>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold text-neutral-700">
+                      Phone Number
+                    </label>
+                    <input
+                      name="phone"
+                      value={form.phone}
+                      onChange={handleChange}
+                      className="h-11 w-full rounded-lg border px-3 text-sm text-neutral-900 outline-none transition focus:ring-2"
+                      style={{ borderColor: `${ACCENT}88`, background: '#fafafa' }}
+                      placeholder="+1 000-000-0000"
+                    />
+                  </div>
+                </div>
 
-            <div className="mt-10 border border-neutral-200 px-5 py-4 text-sm text-neutral-600">
-              <p className="font-semibold text-neutral-900">Quick links</p>
-              <ul className="mt-3 space-y-2">
-                <li>
-                  <Link href="/updates" className="text-[#6b0000] hover:underline">
-                    Browse guest posts
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/press" className="text-[#6b0000] hover:underline">
-                    Press & media kit
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms" className="text-[#6b0000] hover:underline">
-                    Terms & guidelines
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy" className="text-[#6b0000] hover:underline">
-                    Privacy & disclosures
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/search" className="text-[#6b0000] hover:underline">
-                    Search the archive
-                  </Link>
-                </li>
-              </ul>
-            </div>
+                {/* Row 2: Email */}
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold text-neutral-700">
+                    Email <span style={{ color: ACCENT_DARK }}>*</span>
+                  </label>
+                  <input
+                    name="email"
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={handleChange}
+                    className="h-11 w-full rounded-lg border px-3 text-sm text-neutral-900 outline-none transition focus:ring-2"
+                    style={{ borderColor: `${ACCENT}88`, background: '#fafafa' }}
+                    placeholder="you@example.com"
+                  />
+                </div>
 
-            <p className="mt-8 text-sm text-neutral-600">
-              <span className="font-semibold text-neutral-800">Website:</span>{' '}
-              <Link href={SITE_CONFIG.baseUrl} className="text-[#6b0000] underline-offset-2 hover:underline">
-                {SITE_CONFIG.baseUrl.replace(/\/$/, '')}
-              </Link>
-            </p>
+                {/* Helper text */}
+                <p className="text-xs font-medium text-neutral-500">
+                  Help Us Understand Your Needs A Little More.
+                </p>
+
+                {/* Row 3: Org type + Subject */}
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold text-neutral-700">
+                      What type of organization are you? <span style={{ color: ACCENT_DARK }}>*</span>
+                    </label>
+                    <select
+                      name="orgType"
+                      required
+                      value={form.orgType}
+                      onChange={handleChange}
+                      className="h-11 w-full rounded-lg border px-3 text-sm text-neutral-900 outline-none transition focus:ring-2"
+                      style={{ borderColor: `${ACCENT}88`, background: '#fafafa' }}
+                    >
+                      {orgTypes.map((o) => (
+                        <option key={o} value={o} disabled={o === 'Please Select'}>
+                          {o}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold text-neutral-700">
+                      Subject: How may we help you? <span style={{ color: ACCENT_DARK }}>*</span>
+                    </label>
+                    <select
+                      name="subject"
+                      required
+                      value={form.subject}
+                      onChange={handleChange}
+                      className="h-11 w-full rounded-lg border px-3 text-sm text-neutral-900 outline-none transition focus:ring-2"
+                      style={{ borderColor: `${ACCENT}88`, background: '#fafafa' }}
+                    >
+                      {subjects.map((s) => (
+                        <option key={s} value={s} disabled={s === 'Please Select'}>
+                          {s}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Row 4: Message */}
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold text-neutral-700">
+                    Message / Comment <span style={{ color: ACCENT_DARK }}>*</span>
+                  </label>
+                  <textarea
+                    name="message"
+                    required
+                    rows={5}
+                    value={form.message}
+                    onChange={handleChange}
+                    className="w-full rounded-lg border px-3 py-2.5 text-sm text-neutral-900 outline-none transition focus:ring-2 resize-none"
+                    style={{ borderColor: `${ACCENT}88`, background: '#fafafa' }}
+                    placeholder="Tell us more about your request…"
+                  />
+                </div>
+
+                {/* Submit */}
+                <div className="flex justify-center pt-2">
+                  <button
+                    type="submit"
+                    className="px-10 py-2.5 text-sm font-bold text-white shadow-sm transition hover:opacity-90"
+                    style={{
+                      background: ACCENT_DARK,
+                      borderRadius: '6px',
+                    }}
+                  >
+                    Submit Now
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       </main>
+
       <Footer />
     </div>
   )

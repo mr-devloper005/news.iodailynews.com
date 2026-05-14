@@ -84,7 +84,8 @@ export default async function SearchPage({
       </div>
       <button
         type="submit"
-        className="h-11 shrink-0 border border-white bg-white px-5 text-sm font-semibold uppercase tracking-wide text-[#6b0000] hover:bg-white/95"
+        className="h-11 shrink-0 border border-white bg-white px-5 text-sm font-semibold uppercase tracking-wide hover:bg-white/95"
+        style={{ color: '#CD2C58' }}
       >
         Search
       </button>

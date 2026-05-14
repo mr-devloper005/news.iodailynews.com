@@ -29,11 +29,6 @@ export async function TaskDetailPageOverride({ slug }: { task: TaskKey; slug: st
     (Array.isArray(post.tags) ? post.tags.find((t) => typeof t === 'string') : '') ||
     'Media distribution'
   const authorLine = post.authorName || 'Editorial desk'
-  const published = new Date(post.publishedAt || Date.now()).toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  })
   const website = SITE_CONFIG.baseUrl.replace(/\/$/, '')
 
   return (
@@ -56,8 +51,6 @@ export async function TaskDetailPageOverride({ slug }: { task: TaskKey; slug: st
 
           <h1 className="mt-10 text-3xl font-bold leading-tight tracking-tight text-neutral-950 sm:text-4xl">{post.title}</h1>
           <p className="mt-4 text-sm text-neutral-500">
-            {published}
-            {authorLine ? <span className="text-neutral-400"> · </span> : null}
             {authorLine ? <span>By {authorLine}</span> : null}
           </p>
 

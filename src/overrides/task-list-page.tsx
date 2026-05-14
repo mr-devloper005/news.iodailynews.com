@@ -5,6 +5,9 @@ import { fetchTaskPosts } from '@/lib/task-data'
 import type { TaskKey } from '@/lib/site-config'
 import { DistributionSidebar } from '@/components/distribution/distribution-sidebar'
 
+const ACCENT_DARK = '#CD2C58'
+const ACCENT_MID = '#E06B80'
+
 export const TASK_LIST_PAGE_OVERRIDE_ENABLED = true
 
 function excerpt(text?: string | null) {
@@ -37,21 +40,14 @@ export async function TaskListPageOverride(_: { task: TaskKey; category?: string
               </p>
               <h2 className="mt-3 text-2xl font-bold leading-tight text-neutral-950 sm:text-3xl">{post.title}</h2>
               <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-neutral-500">
-                <time dateTime={post.publishedAt || undefined}>
-                  {new Date(post.publishedAt || Date.now()).toLocaleDateString('en-US', {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                </time>
-                <span className="text-neutral-300">·</span>
                 <span>By {post.authorName || 'Editorial desk'}</span>
               </div>
               <p className="mt-6 max-w-3xl text-base leading-[1.75] text-neutral-700">{excerpt(post.summary)}</p>
               <div className="mt-6">
                 <Link
                   href={`/updates/${post.slug}`}
-                  className="inline-flex items-center justify-center border border-neutral-900 bg-neutral-900 px-6 py-2.5 text-xs font-semibold uppercase tracking-wide text-white hover:bg-[#6b0000]"
+                  className="inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-bold text-white shadow-md transition hover:opacity-90"
+                  style={{ background: `linear-gradient(90deg, ${ACCENT_DARK} 0%, ${ACCENT_MID} 100%)` }}
                 >
                   Read full post
                 </Link>

@@ -65,7 +65,7 @@ export default function TermsPage() {
     >
       <p className="text-xs font-medium uppercase tracking-[0.16em] text-neutral-500">Last updated: April 23, 2026</p>
 
-      <div className="mt-6 border border-[#f5c6c6] bg-[#fcecec] px-5 py-4 text-sm leading-relaxed text-[#7f1d1d]">
+      <div className="mt-6 rounded-2xl border px-5 py-4 text-sm leading-relaxed" style={{ borderColor: '#FFC69D88', background: '#FFC69D22', color: '#CD2C58' }}>
         <strong>Reader notice:</strong> Guest and syndicated posts may include links, disclosures, or opinions from third
         parties. Always verify facts that matter to you, especially for financial, legal, or medical decisions.
       </div>
@@ -79,27 +79,27 @@ export default function TermsPage() {
         ))}
       </div>
 
-      <div className="mt-12 border border-neutral-200 bg-neutral-50 px-5 py-4 text-sm text-neutral-700">
+      <div className="mt-12 rounded-2xl border px-5 py-4 text-sm text-neutral-700" style={{ borderColor: '#FFC69D66', background: '#fff' }}>
         <p className="font-semibold text-neutral-900">Related</p>
         <ul className="mt-3 list-inside list-disc space-y-1 text-neutral-600">
           <li>
-            <Link href="/privacy" className="text-[#6b0000] hover:underline">
-              Privacy & disclosures
+            <Link href="/privacy" className="font-semibold hover:underline" style={{ color: '#CD2C58' }}>
+              Privacy &amp; disclosures
             </Link>
           </li>
           <li>
-            <Link href="/cookies" className="text-[#6b0000] hover:underline">
+            <Link href="/cookies" className="font-semibold hover:underline" style={{ color: '#CD2C58' }}>
               Cookie notice
             </Link>
           </li>
           <li>
-            <Link href="/contact" className="text-[#6b0000] hover:underline">
+            <Link href="/contact" className="font-semibold hover:underline" style={{ color: '#CD2C58' }}>
               Submit for distribution / contact
             </Link>
           </li>
           <li>
-            <Link href="/help" className="text-[#6b0000] hover:underline">
-              Help & support
+            <Link href="/help" className="font-semibold hover:underline" style={{ color: '#CD2C58' }}>
+              Help &amp; support
             </Link>
           </li>
         </ul>

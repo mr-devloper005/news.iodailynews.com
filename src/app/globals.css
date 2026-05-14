@@ -347,3 +347,35 @@ body[data-motion-pack='editorial-soft'] main section {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* Distribution sidebar hover states */
+.sidebar-recent-link {
+  background: white;
+}
+.sidebar-recent-link:hover {
+  background: #CD2C58;
+  color: white;
+}
+
+.sidebar-category-link {
+  background: white;
+}
+.sidebar-category-link:hover {
+  background: rgba(255, 198, 157, 0.25);
+  color: #CD2C58;
+}
+
+/* Press release ticker marquee */
+.ticker-track {
+  animation: ticker-scroll 35s linear infinite;
+  will-change: transform;
+}
+
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}

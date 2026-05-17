@@ -1,46 +1,30 @@
 import Link from 'next/link'
-import { FileText, ArrowRight } from 'lucide-react'
 import { SITE_CONFIG } from '@/lib/site-config'
-import { siteContent } from '@/config/site.content'
 import { fetchTaskPosts } from '@/lib/task-data'
 import { CATEGORY_OPTIONS, normalizeCategory } from '@/lib/categories'
+import { DISTRIBUTION_CATEGORY_LINKS } from '@/components/distribution/distribution-sidebar'
+import { ArrowRight, Radio } from 'lucide-react'
 
 export const FOOTER_OVERRIDE_ENABLED = true
 
-const columns = [
-  {
-    title: 'Product',
-    links: [
-      { label: 'Press releases', href: '/updates' },
-      { label: 'Submit a release', href: '/create/mediaDistribution' },
-      { label: 'Search', href: '/search' },
-    ],
-  },
-  {
-    title: 'Company',
-    links: [
-      { label: 'About', href: '/about' },
-      { label: 'Contact', href: '/contact' },
-      { label: 'Press room', href: '/press' },
-    ],
-  },
-  {
-    title: 'Resources',
-    links: [
-      { label: 'Privacy', href: '/privacy' },
-      { label: 'Terms', href: '/terms' },
-      { label: 'Cookies', href: '/cookies' },
-    ],
-  },
-]
 
 const getCategoryLabel = (value: string) => {
   const normalized = normalizeCategory(value)
   return CATEGORY_OPTIONS.find((item) => item.slug === normalized)?.name || value
 }
 
+
+const ACCENT = '#FFC69D'
+const ACCENT_DARK = '#CD2C58'
+const ACCENT_MID = '#E06B80'
+
+const LATEST_LINKS = [
+  { label: 'All guest posts & updates', href: '/updates' },
+  { label: 'Submit for distribution', href: '/contact' },
+  { label: 'Search the archive', href: '/search' },
+] as const
+
 export async function FooterOverride() {
-  const primary = SITE_CONFIG.tasks.find((t) => t.enabled) || SITE_CONFIG.tasks[0]
   const posts = await fetchTaskPosts('mediaDistribution', 200, { allowMockFallback: false })
   const categories = Array.from(
     new Map(
@@ -50,10 +34,7 @@ export async function FooterOverride() {
           const raw = typeof content.category === 'string' ? content.category.trim() : ''
           if (!raw) return null
           const slug = normalizeCategory(raw)
-          return {
-            slug,
-            name: getCategoryLabel(raw),
-          }
+          return { slug, name: getCategoryLabel(raw) }
         })
         .filter((item): item is { slug: string; name: string } => Boolean(item))
         .map((item) => [item.slug, item])
@@ -61,56 +42,132 @@ export async function FooterOverride() {
   ).slice(0, 8)
 
   return (
-    <footer className="border-t border-white/10 bg-[linear-gradient(180deg,#04004a_0%,#1c045d_48%,#0f0238_100%)] text-white">
+    <footer className="mt-auto text-white" style={{ background: `linear-gradient(180deg, ${ACCENT_DARK} 0%, #0f2347 100%)` }}>
+      {/* Top accent line */}
+      <div className="h-[3px] w-full" style={{ background: ACCENT }} />
+
       <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-        <div className="grid gap-10 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
+        {/* Brand + tagline */}
+        <div className="mb-10 flex flex-col items-start gap-4 border-b pb-10 sm:flex-row sm:items-center sm:justify-between" style={{ borderColor: 'rgba(170,196,245,0.18)' }}>
           <div>
-            <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/15 bg-white/10">
-                <span className="font-[family-name:var(--font-display)] text-xl font-semibold text-[#f3c5ff]">{SITE_CONFIG.name.slice(0, 1).toLowerCase()}</span>
-              </span>
-              <div>
-                <p className="font-[family-name:var(--font-display)] text-xl font-semibold">{SITE_CONFIG.name}</p>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#f3c5ff]/80">{siteContent.footer.tagline}</p>
-              </div>
-            </div>
-            <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/65">{SITE_CONFIG.description}</p>
-            {primary ? (
-              <Link
-                href={primary.route}
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#f3c5ff] px-4 py-2.5 text-sm font-semibold text-[#04004a] transition hover:bg-white"
+            <Link href="/" className="flex items-center gap-3">
+              <div
+                className="flex h-10 w-10 items-center justify-center rounded-xl font-extrabold text-white text-base shadow"
+                style={{ background: `linear-gradient(135deg, ${ACCENT_MID} 0%, ${ACCENT_DARK} 100%)`, border: `1.5px solid ${ACCENT}44` }}
               >
-                <FileText className="h-4 w-4" />
-                Browse {primary.label}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            ) : null}
+                N
+              </div>
+              <span className="text-xl font-extrabold uppercase tracking-[0.14em] text-white">
+                {SITE_CONFIG.name}
+              </span>
+            </Link>
+            <p className="mt-2 max-w-sm text-sm leading-relaxed" style={{ color: `${ACCENT}cc` }}>
+              Media distribution, guest publishing, and syndicated outreach for brands and editorial teams.
+            </p>
           </div>
-          {columns.map((col) => (
-            <div key={col.title}>
-              <h3 className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#f3c5ff]/75">{col.title}</h3>
-              <ul className="mt-5 space-y-3 text-sm">
-                {col.links.map((item) => (
-                  <li key={item.href}>
-                    <Link href={item.href} className="text-white/75 transition hover:text-white">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold transition hover:opacity-90"
+            style={{ background: ACCENT, color: ACCENT_DARK }}
+          >
+            <Radio className="h-4 w-4" />
+            Submit a release
+          </Link>
+        </div>
+
+        {/* Links grid */}
+        <div className="grid gap-10 md:grid-cols-3">
+          <div>
+            <h3
+              className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em]"
+              style={{ color: ACCENT }}
+            >
+              <span className="inline-block h-4 w-0.5 rounded-full" style={{ background: ACCENT }} aria-hidden />
+              Categories
+            </h3>
+            <ul className="mt-5 space-y-2.5 text-sm" style={{ color: `${ACCENT}bb` }}>
+              {DISTRIBUTION_CATEGORY_LINKS.map((item) => (
+                <li key={item.label}>
+                  <Link href={item.href} className="transition hover:text-white">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3
+              className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em]"
+              style={{ color: ACCENT }}
+            >
+              <span className="inline-block h-4 w-0.5 rounded-full" style={{ background: ACCENT }} aria-hidden />
+              Latest &amp; outreach
+            </h3>
+            <ul className="mt-5 space-y-2.5 text-sm" style={{ color: `${ACCENT}bb` }}>
+              {LATEST_LINKS.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="transition hover:text-white">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3
+              className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em]"
+              style={{ color: ACCENT }}
+            >
+              <span className="inline-block h-4 w-0.5 rounded-full" style={{ background: ACCENT }} aria-hidden />
+              Search
+            </h3>
+            <form action="/search" method="get" className="mt-5 flex flex-col gap-2">
+              <input type="hidden" name="master" value="1" />
+              <input
+                name="q"
+                className="h-11 rounded-lg border px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-white/40"
+                style={{ background: 'rgba(255,255,255,0.08)', borderColor: 'rgba(170,196,245,0.25)' }}
+                placeholder="Search the archive"
+              />
+              <button
+                type="submit"
+                className="h-11 rounded-lg text-sm font-bold uppercase tracking-wide transition hover:opacity-90"
+                style={{ background: ACCENT, color: ACCENT_DARK }}
+              >
+                Search
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div
+          className="mt-12 flex flex-col items-center justify-between gap-3 border-t pt-8 text-xs sm:flex-row"
+          style={{ borderColor: 'rgba(170,196,245,0.15)', color: `${ACCENT}88` }}
+        >
+          <span>
+            &copy; {new Date().getFullYear()} {SITE_CONFIG.name}. Guest publishing and media distribution.
+          </span>
+          <div className="flex items-center gap-4">
+            <Link href="/privacy" className="transition hover:text-white">Privacy</Link>
+            <span className="opacity-40">·</span>
+            <Link href="/terms" className="transition hover:text-white">Terms</Link>
+            <span className="opacity-40">·</span>
+            <Link href="/contact" className="transition hover:text-white">Contact</Link>
+          </div>
         </div>
 
         {categories.length ? (
-          <div className="mt-10 border-t border-white/10 pt-8">
-            <h3 className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#f3c5ff]/75">Categories</h3>
-            <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-8 border-t border-current/10 pt-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] opacity-70">Categories</p>
+            <div className="mt-3 flex flex-wrap gap-3 text-sm">
               {categories.map((category) => (
                 <Link
                   key={category.slug}
                   href={`/updates?category=${category.slug}`}
-                  className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-white/80 transition hover:border-[#f3c5ff]/60 hover:bg-white/10 hover:text-white"
+                  className="opacity-80 underline-offset-4 transition hover:opacity-100 hover:underline"
                 >
                   {category.name}
                 </Link>
@@ -119,22 +176,6 @@ export async function FooterOverride() {
           </div>
         ) : null}
 
-        <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-8 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            &copy; {new Date().getFullYear()} {SITE_CONFIG.name}. All rights reserved.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <Link href="/privacy" className="hover:text-white/80">
-              Privacy
-            </Link>
-            <Link href="/terms" className="hover:text-white/80">
-              Terms
-            </Link>
-            <Link href="/contact" className="hover:text-white/80">
-              Support
-            </Link>
-          </div>
-        </div>
       </div>
     </footer>
   )
